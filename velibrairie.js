@@ -20,11 +20,11 @@ class Trip {
      * @param {object} l - Format [(year,month,day,hour,minut), elec, number, speed, (hours,minuts,seconds), price]
      */
     constructor(l) {
-        this.date = this.format_date(l[0]);
-        this.elec = this.format_velo(l[1]);
+        this.date = this.formatDate(l[0]);
+        this.elec = this.formatV0elo(l[1]);
         this.number = parseInt(l[2]);
         this.speed = parseFloat(l[3]);
-        this.duration = this.format_duration(l[4]);
+        this.duration = this.formatDuration(l[4]);
         this.price = parseInt(l[5]);
     }
 
@@ -46,7 +46,7 @@ class Trip {
     get minute() {
         return this.date.getMinutes();
     }
-    get dur_mn() {
+    get durMinutes() {
         return this.duration[0] * 60 + this.duration[1] + this.duration[2] / 60;
     }
 
@@ -54,7 +54,7 @@ class Trip {
      * Give the correct format to a duration string
      * @param {string} d - Duration with Velib format: 1h 54min 32sec
      */
-    format_duration(d) {
+    formatDuration(d) {
         d = d.replace(/h /, "-").replace(/min /, "-").replace(/sec /, "").split("-")
         if (d.length == 1) return [0, 0, parseInt(d[0])];
         else if (d.length == 2) return [0, parseInt(d[0]), parseInt(d[1])];
@@ -65,7 +65,7 @@ class Trip {
      * Give the correct format to a date string
      * @param {string} d - Date with Velib format: 08/02/2022 - 19:47
      */
-    format_date(d) {
+    formatDate(d) {
         d = d.split("-");
         let day = d[0].split("/");
         return new Date(`${day[2]}/${day[1]}/${day[0]} ${d[1]}`);
@@ -78,7 +78,7 @@ class Trip {
      * @param {string} v - Velo with Velib format: vélo méca
      * @return {number} - 0 for a normal bike, 1 for electric
      */
-    format_velo(v) {
+    formatVelo(v) {
         return v != "vélo méca";
     }
 }
@@ -146,7 +146,7 @@ function getTripInPage() {
     let runs = $(".runs")
     for (let i = 0; i < runs.length; i++) {
         if ($($(".runs")[i]).html() == " " || $($(".runs")[i]).is("#loader")) continue;
-        result.push(new Trip(get_trip(i)));
+        result.push(new Trip(getTrip(i)));
     }
     return result
 }
@@ -248,13 +248,13 @@ function plotTripsPerWeekday() {
         })));
     }
     let ts = Array(7).fill(0);
-    for (t of all_trips) {
+    for (t of allTrips) {
         ts[t.weekday]++;
     }
     let ds = Array(7).fill(0);
     let ds_nice = Array(7).fill(0);
-    for (t of all_trips) {
-        ds[t.weekday] += (t.dur_mn);
+    for (t of allTrips) {
+        ds[t.weekday] += (t.durMinutes);
         ds_nice[t.weekday] = mn2str(ds[t.weekday]);
     }
 
@@ -319,13 +319,13 @@ function plotTripsPerWeekday() {
 function plotTripsPerHour() {
     let div = createPlot("plotTripsPerHour");
     let ts = Array(25).fill(0);
-    for (t of all_trips) {
+    for (t of allTrips) {
         ts[t.hour]++;
     }
     let ds = Array(25).fill(0);
     let ds_nice = Array(25).fill(0);
-    for (t of all_trips) {
-        ds[t.hour] += (t.dur_mn);
+    for (t of allTrips) {
+        ds[t.hour] += (t.durMinutes);
         ds_nice[t.hour] = mn2str(ds[t.hour]);
     }
     ts[24] = ts[0];
