@@ -10,18 +10,15 @@ Voici un exemple de graphique que vous obtiendrez :
 ## Utilisation
 
 - Ouvrir le navigateur internet de votre choix (nous avons testé Firefox et Chrome).
-- Aller sur le site https://www.velib-metropole.fr et se connecter.
+- Aller sur le site https://www.velib-metropole.fr, se connecter et aller dans « Mon compte ».
 - Faire clic droit > inspecter. Un panneau compliqué s'ouvre sur un côté de l'écran.
 - Aller dans l'onglet "Console" de ce panneau.
 - Dans la zone indiquée par `>` ou `>>`, coller ce code :
 ```javascript
-$("head").append($("script", {
-    type: "text/javascript",
-    url: "https://github.com/lecfab/velibrairie/velibrarie.js"
-}));
+$.getScript("https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js").done(velibrarie)
 ```
 - Appuyer sur Entrée et attendre quelques secondes pendant que les données sont récupérées. Le panneau peut être fermé.
-- Contempler les grpahiques.
+- Contempler les graphiques.
 
 ## Vie privée et sécurité
 
