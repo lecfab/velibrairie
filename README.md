@@ -7,6 +7,7 @@ Voici un outil pour analyser plus en détails votre historique de trajets à Vé
 Voici un exemple de graphique que vous obtiendrez :
 ![](trips-per-hour.png)
 
+
 ## Utilisation
 
 - Ouvrir le navigateur internet de votre choix (nous avons testé Firefox et Chrome).

@@ -8,20 +8,7 @@
 // text/javascript: https://cdn.jsdelivr.net/gh/lecfab/velibrairie/
 // plotting: https://cdn.plot.ly/plotly-2.9.0.min.js
 
-// Let's go!
-function velibrarie() {
-    // Optional: silence errors and warnings in console
-    console.error = function() {}
-    console.warn = function() {}
 
-    // Load the plotting library (https://plotly.com)
-    $.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js");
-
-    goToPageRuns();
-    window.setTimeout(loaderCreate, 800);
-    window.setTimeout(goToPage1, 1000);
-    window.setTimeout(getTripAll, 2000);
-}
 /******************************************************/
 /********** Data format to use it in charts ***********/
 /******************************************************/
@@ -95,6 +82,8 @@ class Trip {
         return v != "vélo méca";
     }
 }
+
+
 /******************************************************/
 /******* Extracting the data from the webpage *********/
 /******************************************************/
@@ -165,7 +154,6 @@ function getTripInPage() {
 /**
  * Get the information of all trips
  */
-
 function getTripAllPages(p) {
     loaderUpdate(p);
     if (p == 0) return;
@@ -203,6 +191,8 @@ function loaderStop() {
     $(".race-tab").show(100);
     velibrairiePlot();
 }
+
+
 /******************************************************/
 /***************** Plotting functions *****************/
 /******************************************************/
@@ -403,3 +393,20 @@ function velibrairiePlot() {
     plotTripsPerWeekday();
     plotTripsPerHour();
 }
+
+
+/******************************************************/
+/****************** Execute everything ****************/
+/******************************************************/
+
+// Optional: silence errors and warnings in console
+console.error = function() {}
+console.warn = function() {}
+
+// Load the plotting library (https://plotly.com)
+$.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js");
+
+goToPageRuns();
+window.setTimeout(loaderCreate, 800);
+window.setTimeout(goToPage1, 1000);
+window.setTimeout(getTripAll, 2000);
