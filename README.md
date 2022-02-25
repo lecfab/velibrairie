@@ -16,7 +16,7 @@ Voici un exemple de graphique que vous obtiendrez :
 - Aller dans l'onglet "Console" de ce panneau.
 - Dans la zone indiquée par `>` ou `>>`, coller ce code :
 ```javascript
-$.getScript("https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js").done(velibrarie)
+$.getScript("https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js")
 ```
 - Appuyer sur Entrée et attendre quelques secondes pendant que les données sont récupérées. Le panneau peut être fermé.
 - Contempler les graphiques.
