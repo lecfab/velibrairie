@@ -21,7 +21,7 @@ class Trip {
      */
     constructor(l) {
         this.date = this.formatDate(l[0]);
-        this.elec = this.formatV0elo(l[1]);
+        this.elec = this.formatVelo(l[1]);
         this.number = parseInt(l[2]);
         this.speed = parseFloat(l[3]);
         this.duration = this.formatDuration(l[4]);
