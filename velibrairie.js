@@ -49,6 +49,9 @@ class Trip {
     get durMinutes() {
         return this.duration[0] * 60 + this.duration[1] + this.duration[2] / 60;
     }
+    get distance() {
+        return this.speed * this.durMinutes / 60;
+    }
 
     /**
      * Give the correct format to a duration string
@@ -160,6 +163,9 @@ function getTripAllPages(p) {
     allTrips = allTrips.concat(getTripInPage());
     goToNextPage();
 
+    // Optional: update the plot after each scrapped page
+    velibrairiePlot();
+
     window.setTimeout(getTripAllPages, 1000, p - 1);
 }
 
@@ -175,7 +181,7 @@ function loaderCreate() {
     $(".race-tab").parent().prepend($("<div>", {
         id: "loader",
         class: "runs",
-        style: "padding: 30px"
+        style: "padding: 30px; background: var(--warning)"
     }).html(`Patience : le script doit encore lire <span>les informations</span> de vos trajets.`))
     $(".race-tab").hide(100);
 }
@@ -191,27 +197,31 @@ function loaderStop() {
     $(".race-tab").show(100);
     velibrairiePlot();
 }
-
-
 /******************************************************/
 /***************** Plotting functions *****************/
 /******************************************************/
 
-let zone;
-let params = {
+var zone;
+var params = {
     color1: "#1669A9",
     color2: "#619C2F",
+    config: { responsive: true },
+    linewidth: 3,
+    titlesize: 20,
+    marginTop: 100,
 }
 
 function createPlot(name) {
     let id = "#" + name;
     if ($(id).length == 0) {
-        $(zone).parent().append($("<div>", {
+        $(".race-tab-synthesis").append($("<div>", {
             id: name,
-            class: "plot"
+            class: "col-12 plot"
         }));
+        $(id).append($("<div class='chart'></div>"));
+        $(id).append($("<div class='comment'></div>"));
     }
-    return $(id)[0];
+    return $(id);
 }
 
 
@@ -232,6 +242,10 @@ function mn2str(mn) {
 
 function capitalFirst(str) {
     return str[0].toUpperCase() + str.slice(1);
+}
+
+function plural(x, singular, plural = singular + "s") {
+    return x + " " + ((x > 1) ? plural : singular);
 }
 
 
@@ -258,14 +272,16 @@ function plotTripsPerWeekday() {
         ds_nice[t.weekday] = mn2str(ds[t.weekday]);
     }
 
-    Plotly.newPlot(div, [{
+    let comment_id = 0;
+    div.find(".comment").html(
+        `Lecture : le ${x[comment_id]}, ` +
+        `vous avez fait ${plural(ts[comment_id], "trajet")} ` +
+        `pour une durée totale de ${ds_nice[comment_id]}.`);
+    Plotly.newPlot(div.find(".chart")[0], [{
         name: "Trajets",
         x: x,
         y: ts,
-        line: {
-            color: params.color1,
-            width: 3
-        },
+        line: { color: params.color1, width: params.linewidth, },
         // hovertemplate: "%{yaxis.title.text}: %{y: }<extra></extra>",
         showlegend: false
     }, {
@@ -274,43 +290,36 @@ function plotTripsPerWeekday() {
         y: ds,
         text: ds_nice,
         yaxis: 'y2',
-        line: {
-            color: params.color2,
-            width: 3
-        },
+        line: { color: params.color2, width: params.linewidth, },
         hovertemplate: "%{text}",
         showlegend: false
     }], {
-        title: 'Utilisation par jour de la semaine',
+        title: {
+            text: 'Utilisation par jour de la semaine',
+            font: { size: params.titlesize }
+        },
+        margin: { t: params.marginTop },
         xaxis: {
-            title: 'Jour de la semaine',
+            title: 'Jour de la semaine (prise du vélo)',
             // showgrid: false,
             zeroline: false
         },
         yaxis: {
             title: 'Nombre de trajets',
             rangemode: "tozero",
-            titlefont: {
-                color: params.color1
-            },
-            tickfont: {
-                color: params.color1
-            },
+            titlefont: { color: params.color1 },
+            tickfont: { color: params.color1 },
         },
         yaxis2: {
-            title: 'Durée des trajets',
+            title: 'Durée des trajets (minutes)',
             rangemode: "tozero",
             overlaying: 'y',
             side: 'right',
-            titlefont: {
-                color: params.color2
-            },
-            tickfont: {
-                color: params.color2
-            },
+            titlefont: { color: params.color2 },
+            tickfont: { color: params.color2 },
         },
         hovermode: "x",
-    });
+    }, params.config);
 }
 
 /*
@@ -332,14 +341,16 @@ function plotTripsPerHour() {
     ds[24] = ds[0];
     ds_nice[24] = ds_nice[0];
 
-    Plotly.newPlot(div, [{
+    let comment_id = 18;
+    div.find(".comment").html(
+        `Lecture : entre ${comment_id}h et ${comment_id+1}h, ` +
+        `vous avez fait ${plural(ts[comment_id], "trajet")} ` +
+        `pour une durée totale de ${ds_nice[comment_id]}.`);
+    Plotly.newPlot(div.find(".chart")[0], [{
         name: "Trajets",
         x: [...ts.keys()],
         y: ts,
-        line: {
-            color: params.color1,
-            width: 3
-        },
+        line: { color: params.color1, width: params.linewidth, },
         showlegend: false
     }, {
         name: "Durée",
@@ -347,51 +358,137 @@ function plotTripsPerHour() {
         y: ds,
         text: ds_nice,
         yaxis: 'y2',
-        line: {
-            color: params.color2,
-            width: 3
-        },
+        line: { color: params.color2, width: params.linewidth, },
         hovertemplate: "%{text}",
         showlegend: false
     }], {
-        title: 'Utilisation par heure de la journée',
+        title: {
+            text: 'Utilisation par heure de la journée',
+            font: { size: params.titlesize }
+        },
+        margin: { t: params.marginTop },
         xaxis: {
-            title: 'Heure de la journée',
+            title: 'Heure de la journée (prise du vélo)',
             // showgrid: false,
             zeroline: false
         },
         yaxis: {
             title: 'Nombre de trajets',
             rangemode: "tozero",
-            titlefont: {
-                color: params.color1
-            },
-            tickfont: {
-                color: params.color1
-            },
+            titlefont: { color: params.color1 },
+            tickfont: { color: params.color1 },
         },
         yaxis2: {
-            title: 'Durée des trajets',
+            title: 'Durée des trajets (minutes)',
             rangemode: "tozero",
             overlaying: 'y',
             side: 'right',
-            titlefont: {
-                color: params.color2
-            },
-            tickfont: {
-                color: params.color2
-            },
+            titlefont: { color: params.color2 },
+            tickfont: { color: params.color2 },
         },
         hovermode: "x",
+    }, params.config);
+}
+
+
+/*
+ * Shows the distribution of average speed of a trip
+ */
+function plotDistribSpeed() {
+    let div = createPlot("plotDistribSpeed");
+
+    let frames = [
+        { name: "speed", binsize: 1, data: [{hovertemplate: "Trajets à %{text: } km/h : %{y: }<extra></extra>" }]},
+        { name: "durMinutes", binsize: 1, data: [{hovertemplate: "Trajets d'environ %{text: } min : %{y: }<extra></extra>", }]},
+        { name: "distance", binsize: .5, data: [{hovertemplate: "Trajets d'environ %{text: } km : %{y: }<extra></extra>"}] }
+    ];
+
+    for (let i = 0; i < frames.length; i++) {
+        let max = 0;
+        for (t of allTrips) {
+            if (t[frames[i].name] > max) max = t[frames[i].name];
+        }
+        frames[i].data[0].y = Array(parseInt(max / frames[i].binsize) + 1).fill(0);
+        for (t of allTrips) {
+            frames[i].data[0].y[parseInt(t[frames[i].name] / frames[i].binsize)]++;
+        }
+        frames[i].data[0].x = [...frames[0].data[0].y.keys()];
+        frames[i].data[0].text = Array();
+        for(let x of frames[i].data[0].x)
+            frames[i].data[0].text.push(x * frames[i].binsize);
+    }
+
+    // let comment_id = parseInt(speeds.length / 2);
+    // div.find(".comment").html(
+    //     `Lecture : vous avez fait ${plural(speeds[comment_id], "trajet")} ` +
+    //     `à une vitesse moyenne comprise entre ${comment_id}h et ${comment_id+1}km/h.`);
+    Plotly.newPlot(div.find(".chart")[0], [{
+        name: "Trajets",
+        x: frames[0].data[0].text,
+        y: frames[0].data[0].y,
+        text: frames[0].data[0].text,
+        hovertemplate: frames[0].data[0].hovertemplate,
+        line: { color: params.color1, width: params.linewidth, },
+        showlegend: false
+    }], {
+        title: {
+            text: 'Distribution de vitesse, durée et distance',
+            font: { size: params.titlesize }
+        },
+        margin: { t: params.marginTop },
+        xaxis: {
+            title: 'Valeur',// 'Vitesse moyenne du trajet (km/h)',
+            zeroline: false
+        },
+        yaxis: {
+            title: 'Nombre de trajets',
+            rangemode: "tozero",
+        },
+        hovermode: "x",
+        // updatemenus: [{'buttons': [{'args': [['0', '1', '2', '3'], {'frame': {'duration': 500.0, 'redraw': False}, 'fromcurrent': True, 'transition': {'duration': 0, 'easing': 'linear'}}], 'label': 'Play', 'method': 'animate'}, {'args': [[None], {'frame': {'duration': 0, 'redraw': False}, 'mode': 'immediate', 'transition': {'duration': 0}}], 'label': 'Pause', 'method': 'animate'}], 'direction': 'left', 'pad': {'r': 10, 't': 85}, 'showactive': True, 'type': 'buttons', 'x': 0.1, 'y': 0, 'xanchor': 'right', 'yanchor': 'top'}],
+        updatemenus: [{
+            type: "buttons", // "dropdown"
+            buttons: [{
+                    method: 'animate',
+                    label: 'Vitesse',
+                    args: [
+                        ['speed'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                    ],
+                },
+                {
+                    method: 'animate',
+                    label: 'Durée',
+                    args: [
+                        ['durMinutes'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                    ],
+                },
+                {
+                    method: 'animate',
+                    label: 'Distance',
+                    args: [
+                        ['distance'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                    ],
+                }
+            ]
+        }]
+    }, params.config).then(function() {
+        Plotly.addFrames(div.find(".chart")[0], frames);
+    });
+
+    div.on("plotly_animated", function(e,t) { // find(".updatemenu-container").click(  // plotly_buttonclicked
+        Plotly.relayout( div.find(".chart")[0], {
+            'xaxis.autorange': true,
+            'yaxis.autorange': true
+        });
     });
 }
 
 
 
 function velibrairiePlot() {
-    zone = $(".synthesis-content")[0];
     plotTripsPerWeekday();
     plotTripsPerHour();
+    plotDistribSpeed();
 }
 
 
@@ -404,9 +501,9 @@ console.error = function() {}
 console.warn = function() {}
 
 // Load the plotting library (https://plotly.com)
-$.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js");
-
-goToPageRuns();
-window.setTimeout(loaderCreate, 800);
-window.setTimeout(goToPage1, 1000);
-window.setTimeout(getTripAll, 2000);
+$.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js").done(function(){
+    goToPageRuns();
+    window.setTimeout(loaderCreate, 800);
+    window.setTimeout(goToPage1, 1000);
+    window.setTimeout(getTripAll, 2000);
+});
