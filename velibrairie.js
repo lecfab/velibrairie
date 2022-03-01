@@ -1,14 +1,17 @@
 /******************************************************/
 /****** Vélib'rairie : analyse de trajets Vélib *******/
 /******************************************************/
-
+//
 // repository: https://github.com/lecfab/velibrairie
 // utilisation: https://www.velib-metropole.fr/private/account#/my-runs
 // text/plain: https://raw.githubusercontent.com/lecfab/velibrairie/main/
 // text/javascript: https://cdn.jsdelivr.net/gh/lecfab/velibrairie/
 // plotting: https://cdn.plot.ly/plotly-2.9.0.min.js
-
-
+//
+// Fabrice Lécuyer, 2022
+//
+//
+//
 /******************************************************/
 /********** Data format to use it in charts ***********/
 /******************************************************/
@@ -85,8 +88,8 @@ class Trip {
         return v != "vélo méca";
     }
 }
-
-
+//
+//
 /******************************************************/
 /******* Extracting the data from the webpage *********/
 /******************************************************/
@@ -115,7 +118,7 @@ function goToNextPage() {
 }
 
 /**
- * Find the number of total pages
+ * Find the total number of pages
  */
 function getTotalPages() {
     let items = $(".page-item");
@@ -175,7 +178,9 @@ function getTripAll() {
 }
 
 
-
+/* 
+ * Loading message for users
+ */
 function loaderCreate() {
     // $(".runs").hide(100);
     $(".race-tab").parent().prepend($("<div>", {
@@ -197,6 +202,8 @@ function loaderStop() {
     $(".race-tab").show(100);
     velibrairiePlot();
 }
+//
+//
 /******************************************************/
 /***************** Plotting functions *****************/
 /******************************************************/
@@ -369,7 +376,6 @@ function plotTripsPerHour() {
         margin: { t: params.marginTop },
         xaxis: {
             title: 'Heure de la journée (prise du vélo)',
-            // showgrid: false,
             zeroline: false
         },
         yaxis: {
@@ -392,15 +398,15 @@ function plotTripsPerHour() {
 
 
 /*
- * Shows the distribution of average speed of a trip
+ * Shows the distribution of duration, distance or average speed of a trip
  */
 function plotDistribSpeed() {
     let div = createPlot("plotDistribSpeed");
 
     let frames = [
-        { name: "speed", binsize: 1, data: [{hovertemplate: "Trajets à %{text: } km/h : %{y: }<extra></extra>" }]},
-        { name: "durMinutes", binsize: 1, data: [{hovertemplate: "Trajets d'environ %{text: } min : %{y: }<extra></extra>", }]},
-        { name: "distance", binsize: .5, data: [{hovertemplate: "Trajets d'environ %{text: } km : %{y: }<extra></extra>"}] }
+        { name: "speed", binsize: 1, data: [{ hovertemplate: "Trajets à %{text: } km/h : %{y: }<extra></extra>" }] },
+        { name: "durMinutes", binsize: 1, data: [{ hovertemplate: "Trajets d'environ %{text: } min : %{y: }<extra></extra>", }] },
+        { name: "distance", binsize: .5, data: [{ hovertemplate: "Trajets d'environ %{text: } km : %{y: }<extra></extra>" }] }
     ];
 
     for (let i = 0; i < frames.length; i++) {
@@ -414,7 +420,7 @@ function plotDistribSpeed() {
         }
         frames[i].data[0].x = [...frames[0].data[0].y.keys()];
         frames[i].data[0].text = Array();
-        for(let x of frames[i].data[0].x)
+        for (let x of frames[i].data[0].x)
             frames[i].data[0].text.push(x * frames[i].binsize);
     }
 
@@ -437,7 +443,7 @@ function plotDistribSpeed() {
         },
         margin: { t: params.marginTop },
         xaxis: {
-            title: 'Valeur',// 'Vitesse moyenne du trajet (km/h)',
+            title: 'Valeur', // 'Vitesse moyenne du trajet (km/h)',
             zeroline: false
         },
         yaxis: {
@@ -445,28 +451,27 @@ function plotDistribSpeed() {
             rangemode: "tozero",
         },
         hovermode: "x",
-        // updatemenus: [{'buttons': [{'args': [['0', '1', '2', '3'], {'frame': {'duration': 500.0, 'redraw': False}, 'fromcurrent': True, 'transition': {'duration': 0, 'easing': 'linear'}}], 'label': 'Play', 'method': 'animate'}, {'args': [[None], {'frame': {'duration': 0, 'redraw': False}, 'mode': 'immediate', 'transition': {'duration': 0}}], 'label': 'Pause', 'method': 'animate'}], 'direction': 'left', 'pad': {'r': 10, 't': 85}, 'showactive': True, 'type': 'buttons', 'x': 0.1, 'y': 0, 'xanchor': 'right', 'yanchor': 'top'}],
         updatemenus: [{
             type: "buttons", // "dropdown"
             buttons: [{
                     method: 'animate',
                     label: 'Vitesse',
                     args: [
-                        ['speed'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                        ['speed'], { 'frame': { 'duration': 0, 'redraw': true }, 'transition': { 'duration': 0 } }
                     ],
                 },
                 {
                     method: 'animate',
                     label: 'Durée',
                     args: [
-                        ['durMinutes'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                        ['durMinutes'], { 'frame': { 'duration': 0, 'redraw': true }, 'transition': { 'duration': 0 } }
                     ],
                 },
                 {
                     method: 'animate',
                     label: 'Distance',
                     args: [
-                        ['distance'], {'frame': {'duration': 0, 'redraw': true}, 'transition': {'duration': 0}}
+                        ['distance'], { 'frame': { 'duration': 0, 'redraw': true }, 'transition': { 'duration': 0 } }
                     ],
                 }
             ]
@@ -475,10 +480,11 @@ function plotDistribSpeed() {
         Plotly.addFrames(div.find(".chart")[0], frames);
     });
 
-    div.on("plotly_animated", function(e,t) { // find(".updatemenu-container").click(  // plotly_buttonclicked
-        Plotly.relayout( div.find(".chart")[0], {
+    div.on("plotly_animated", function(e, t) { // find(".updatemenu-container").click(  // plotly_buttonclicked
+        Plotly.relayout(div.find(".chart")[0], {
             'xaxis.autorange': true,
-            'yaxis.autorange': true
+            'yaxis.autorange': true,
+            // find a way to update x-axis and title according to current frame
         });
     });
 }
@@ -490,8 +496,8 @@ function velibrairiePlot() {
     plotTripsPerHour();
     plotDistribSpeed();
 }
-
-
+//
+//
 /******************************************************/
 /****************** Execute everything ****************/
 /******************************************************/
@@ -500,10 +506,10 @@ function velibrairiePlot() {
 console.error = function() {}
 console.warn = function() {}
 
+goToPageRuns();
+window.setTimeout(loaderCreate, 800);
+window.setTimeout(goToPage1, 1000);
 // Load the plotting library (https://plotly.com)
-$.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js").done(function(){
-    goToPageRuns();
-    window.setTimeout(loaderCreate, 800);
-    window.setTimeout(goToPage1, 1000);
+$.getScript("https://cdn.plot.ly/plotly-2.9.0.min.js").done(function() {
     window.setTimeout(getTripAll, 2000);
 });
