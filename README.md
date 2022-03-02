@@ -26,16 +26,17 @@ C'est assez simple :
 ```javascript
 $.getScript("https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js")
 ```
-1. Appuyer sur Entrée et attendre quelques secondes pendant que les données sont récupérées. Le panneau peut être fermé.
-1. Contempler les graphiques.
+6. Appuyer sur Entrée et attendre quelques secondes pendant que les données sont récupérées. Le panneau peut être fermé.
+7. Contempler les graphiques.
 
 ## Vie privée et sécurité
 
 Le script est entièrement local :
 il n'envoie rien à personne,
 vos données restent sur votre ordinateur.
-Il ne peut pas accéder à votre mot de passe ni à vos informations personnelles.
-Pour vous en assurer, vous pouvez regarder le code source ([`velibrairie.js`](velibrairie.js)) et voir qu'aucune URL n'est appelée, hormis pour le chargement de l'outil graphique Plotly (https://plot.ly).
+Il n'inclut ni cookies ni trackers, et
+ne peut pas accéder à votre mot de passe ni extraire vos informations personnelles.
+Pour vous en assurer, vérifiez que le code source ([`velibrairie.js`](velibrairie.js)) n'appelle aucune URL hormis celle de l'outil graphique Plotly (https://plot.ly).
 
 
 
@@ -44,3 +45,9 @@ Pour vous en assurer, vous pouvez regarder le code source ([`velibrairie.js`](ve
 Fabrice Lécuyer, 2022
 
 Ce projet n'est pas officiel et n'est lié ni à Vélib-métropole ni à Smovengo.
+
+Idées pour participer :
+- rapporter un bug dans les [issues](./issues) (il faut créer un compte github).
+- suggérer une amélioration dans les [issues](./issues) (il faut créer un compte github).
+- tester de nouveaux navigateurs (Opéra, Edge, etc).
+- proposer une pull request avec de nouveaux graphiques Plotly.
