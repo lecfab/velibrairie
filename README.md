@@ -12,13 +12,13 @@ Analysez vos trajets à Vélib' sans aucune atteinte à votre vie privée. La li
 
 Voici un exemple de graphique que vous obtiendrez :
 
-![](trips-per-hour.png)
+![Image du nombre de trajets par heure de la journée](trips-per-hour.png)
 
 
 ## Utilisation
 
 C'est assez simple :
-1. Ouvrir le navigateur internet de votre choix (nous avons testé Firefox et Chrome).
+1. Sur un ordinateur, ouvrir le navigateur internet de votre choix (nous avons testé Firefox et Chrome).
 1. Aller sur le site https://www.velib-metropole.fr, se connecter et aller dans « Mon compte ».
 1. Faire clic droit > inspecter. Un panneau compliqué s'ouvre sur un côté de l'écran.
 1. Aller dans l'onglet "Console" de ce panneau.
@@ -49,5 +49,5 @@ Ce projet n'est pas officiel et n'est lié ni à Vélib-métropole ni à Smoveng
 Idées pour participer :
 - rapporter un bug dans les [issues](./issues) (il faut créer un compte github).
 - suggérer une amélioration dans les [issues](./issues) (il faut créer un compte github).
-- tester de nouveaux navigateurs (Opéra, Edge, etc).
+- tester de nouveaux navigateurs (Opéra, Safari, Edge, etc).
 - proposer une pull request avec de nouveaux graphiques Plotly.
