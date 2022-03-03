@@ -25,8 +25,9 @@ C'est assez simple :
  Aller dans l'onglet "Console" de ce panneau.
 1. :clipboard: Dans la zone indiquée par `>` ou `>>`, coller le code ci-dessous. Il peut y avoir un avertissement du type « ne collez que des codes de confiance dans cette zone ».
 ```javascript
-$.getScript("https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js")
+$.getScript("https://lstu.fr/velibrairie")
 ```
+<!-- https://cdn.jsdelivr.net/gh/lecfab/velibrairie/velibrairie.js -->
 5. :hourglass_flowing_sand: Appuyer sur Entrée et attendre quelques secondes pendant que les données sont récupérées. Le panneau peut être fermé.
 6. :bar_chart: Contempler les graphiques.
 
